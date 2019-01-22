@@ -1178,7 +1178,9 @@ class IndyService(ServiceBase):
                 LOGGER.debug("Async get-credential-dependencies to endpoint %s for schema %s", endpoint, dependency.schema_name)
 
                 async with self.http as client:
+                    LOGGER.debug("Setting-up agent URL")
                     url = "{}/get-credential-dependencies".format(endpoint)
+                    LOGGER.debug("Posting request to client")
                     response = await client.post(url, params={
                         "schema_name": dependency.schema_name,
                         "schema_version": dependency.schema_version,
@@ -1190,7 +1192,9 @@ class IndyService(ServiceBase):
                         "ctx": "get dependencies",
                         "url": endpoint,
                     })
+                LOGGER.debug("Awaiting JSON response")
                 resp_json = await response.text()
+                LOGGER.debug("Deserializing JSON response")
                 resp = json.loads(resp_json)
 
                 LOGGER.debug("Async response from endpoint %s is: %s", endpoint, resp_json)
@@ -1250,7 +1254,6 @@ class IndyService(ServiceBase):
                                     dependency.add_dependency(
                                         CredentialDependency(dep.name, dep.version, dep.origin_did)
                                     )
-
                                     LOGGER.debug(
                                         "Await get-credential-dependencies for known schema %s",
                                         schema_name,
